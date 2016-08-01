@@ -9,8 +9,12 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.1.0")
 
 addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.2")
 
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.0.1")
+// Code quality tools
 
-addSbtPlugin("org.danielnixon" % "sbt-playwarts" % "0.24")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.1.0")
+
+addSbtPlugin("org.danielnixon" % "sbt-playwarts" % "0.27")
 
 addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.2.5")
+
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.5")
