@@ -22,7 +22,8 @@ class Filters @Inject() (
     // Use the example filter if we're running development mode. If
     // we're running in production or test mode then don't use any
     // filters at all.
-    if (env.mode == Mode.Dev) Seq.empty else Seq.empty
+    // check env.mode == Mode.Dev to disable filters during development
+    Seq.empty
   }
 
 }

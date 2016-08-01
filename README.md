@@ -1,6 +1,6 @@
 # Backend
 
-start with
+start development with
 
 ```
 sbt run
