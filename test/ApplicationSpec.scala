@@ -1,3 +1,5 @@
+import java.util.UUID
+
 import org.scalatestplus.play._
 import play.api.test.Helpers._
 import play.api.test._
@@ -29,7 +31,7 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
   }
 
-  "BackendController" should {
+  "BackendController V1" should {
 
     val validClientUpdate =
       """
@@ -106,4 +108,43 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
+
+  "BackendController V2" should {
+
+    val validClientUpdate =
+      """
+        [
+          {
+            "lat": 0.0,
+            "lng": 0.0,
+            "ele": 0.0,
+            "heading": 360,
+            "timestamp": 100
+          },
+          {
+            "lat": 1.0,
+            "lng": 1.0,
+            "ele": 10.0,
+            "heading": 360,
+            "timestamp": 100
+          }
+        ]
+      """
+
+    "accept valid json" in {
+      val validRequest = FakeRequest(
+        Helpers.POST,
+        controllers.routes.BackendController.send2(UUID.randomUUID()).url,
+        FakeHeaders(
+          Seq("Content-type"->"application/json")
+        ),
+        validClientUpdate
+      )
+
+      val Some(result) = route(app, validRequest)
+
+      status(result) mustBe OK
+    }
+
+  }
 }
