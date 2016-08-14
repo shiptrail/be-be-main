@@ -1,0 +1,34 @@
+<html>
+    <head>
+
+        <script>
+
+            function log(msg) {
+                document.getElementById("log").innerHTML += "<div>" + msg + "</div>"
+            }
+            var source = new EventSource("/tracks/all");
+            source.addEventListener('message', function (e) {
+                log(e.data);
+            }, false);
+
+            source.addEventListener('addPoint', function (e) {
+                log('addPoint: ' + e.data);
+            }, false);
+
+            source.addEventListener('open', function (e) {
+                log('Connection was opened.');
+            }, false);
+
+            source.addEventListener('error', function (e) {
+                if (e.readyState == EventSource.CLOSED) {
+                    log('Connection was closed.');
+                } else {
+                    log('Connection had an error.');
+                }
+            }, false);
+</script>
+    </head>
+    <body>
+        <div id="log"></div>
+    </body>
+</html>
