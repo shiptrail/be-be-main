@@ -1,20 +1,34 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
+<html>
+    <head>
 
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Welcome to Play") {
+        <script>
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Scala")
+            function log(msg) {
+                document.getElementById("log").innerHTML += "<div>" + msg + "</div>"
+            }
+            var source = new EventSource("/tracks/all");
+            source.addEventListener('message', function (e) {
+                log(e.data);
+            }, false);
 
-}
+            source.addEventListener('addPoint', function (e) {
+                log('addPoint: ' + e.data);
+            }, false);
+
+            source.addEventListener('open', function (e) {
+                log('Connection was opened.');
+            }, false);
+
+            source.addEventListener('error', function (e) {
+                if (e.readyState == EventSource.CLOSED) {
+                    log('Connection was closed.');
+                } else {
+                    log('Connection had an error.');
+                }
+            }, false);
+</script>
+    </head>
+    <body>
+        <div id="log"></div>
+    </body>
+</html>
