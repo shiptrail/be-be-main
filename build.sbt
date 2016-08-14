@@ -1,7 +1,18 @@
-
 name := """backend-server"""
 
-version := "1.0-SNAPSHOT"
+version := {
+  val jenkinsBuild = for {
+    minor <- sys.env.get("BUILD_NUMBER")
+    changenum <- sys.env.get("GERRIT_CHANGE_NUMBER")
+    patchset <- sys.env.get("GERRIT_PATCHSET_NUMBER")
+  } yield s"1.$minor.$changenum.$patchset"
+
+  val user = sys.env.getOrElse("USER", "nouser")
+
+  jenkinsBuild.getOrElse(s"1.${git.gitHeadCommit.value.get}.$user")
+}
+
+maintainer := "SWP DV Team <dbslehre@inf.fu-berlin.de>"
 
 enablePlugins(PlayScala)
 
@@ -14,7 +25,6 @@ libraryDependencies ++= Seq(
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
-
 
 coverageExcludedFiles := target.value.absolutePath + ".*"
 coverageMinimum := 80.0
