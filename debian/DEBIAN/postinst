@@ -145,4 +145,5 @@ ln -s /etc/nginx/sites-available/swpdv /etc/nginx/sites-enabled/swpdv || true
 rm /etc/nginx/sites-enabled/default || true
 
 echo "Enable and (re-)start nginx"
-systemctl restart nginx
+nginx -t
+nginx -s reload
