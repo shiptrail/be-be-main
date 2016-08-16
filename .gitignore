@@ -15,3 +15,4 @@ test-result
 server.pid
 *.eml
 .cache
+.vagrant
