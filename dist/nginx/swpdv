@@ -47,7 +47,7 @@ server {
 		try_files $uri $uri/ =404;
 	}
 
-    rewrite ^/swpdvtracker.apk /fe/swpdvtracker.apk permanent;
+    rewrite ^/swpdvtracker.apk /fe/app-release-unsigned.apk permanent;
 
 	location / {
                  proxy_set_header        Host $host;
