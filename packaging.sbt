@@ -1,21 +1,11 @@
 enablePlugins(JavaServerAppPackaging, SystemdPlugin)
 
+
+// ====== General settings ======
+
 packageSummary := "backend-server for SWP DV"
 
 packageDescription := """Contains the backend for both gps logging clients and the frontend"""
-
-// Where to install package data
-defaultLinuxInstallLocation := "/opt"
-
-// dpkg-deb in java
-enablePlugins(JDebPackaging)
-
-// dependencies for debian based distributions
-debianPackageDependencies in Debian ++= Seq("openjdk-8-jre", "nginx")
-
-// rpm specific fields
-rpmVendor := "SWP DV Team"
-rpmLicense := Some("Apache License 2.0")
 
 // timeout before the service manager restarts this service (in case of debian systemd)
 retryTimeout := 10
@@ -37,6 +27,12 @@ javaOptions in Universal ++= Seq(
   "-DapplyEvolutions.default=true"
 )
 
+
+// ====== Linux specific settings ======
+
+// Where to install package data
+defaultLinuxInstallLocation := "/opt"
+
 linuxPackageMappings += {
   val builtFrontend = baseDirectory.value / "fe-root" / "fe"
   packageDirectoryAndContentsMapping((builtFrontend, s"/opt/${packageName.value}/fe-root/fe"))
@@ -46,3 +42,41 @@ linuxPackageMappings += {
   val nginxConfig = baseDirectory.value / "dist" / "nginx" / "swpdv"
   packageMapping((nginxConfig, "/etc/nginx/sites-available/swpdv"))
 }
+
+val linuxPostInstallScript =
+  s"""
+     |echo "Configure Nginx"
+     |ln -s /etc/nginx/sites-available/swpdv /etc/nginx/sites-enabled/swpdv || true
+     |rm /etc/nginx/sites-enabled/default || true
+     |
+     |echo "Enable and (re-)start nginx"
+     |nginx -t
+     |nginx -s reload
+     """.stripMargin
+
+
+// ====== Debian specific ======
+
+// dpkg-deb in java
+enablePlugins(JDebPackaging)
+// dependencies for debian based distributions
+debianPackageDependencies in Debian ++= Seq("openjdk-8-jre", "nginx", "ssl-cert")
+// append to install / remove scripts for RPM packages
+// see: http://www.scala-sbt.org/sbt-native-packager/formats/debian.html?highlight=maintainerscript#customizing-debian-metadata
+import DebianConstants._
+maintainerScripts in Debian := maintainerScriptsAppend((maintainerScripts in Debian).value)(
+  Postinst -> linuxPostInstallScript
+)
+
+
+// ====== RPM specific ======
+
+// rpm specific fields
+rpmVendor := "SWP DV Team"
+rpmLicense := Some("Apache License 2.0")
+// append to install / remove scriptlets for RPM packages
+// see: http://www.scala-sbt.org/sbt-native-packager/formats/rpm.html#scriptlet-changes
+import RpmConstants._
+maintainerScripts in Rpm := maintainerScriptsAppend((maintainerScripts in Rpm).value)(
+  Post -> linuxPostInstallScript
+)
