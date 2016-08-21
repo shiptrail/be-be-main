@@ -24,4 +24,4 @@ addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.2.5")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.5")
 
-libraryDependencies += "org.vafer" % "jdeb" % "1.3" artifacts (Artifact("jdeb", "jar", "jar"))
+libraryDependencies += "org.vafer" % "jdeb" % "1.3" artifacts Artifact("jdeb", "jar", "jar")

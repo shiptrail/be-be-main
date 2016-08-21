@@ -11,19 +11,17 @@ HOWEVER: IT IS UNSUPPORTED AND SHOULD ONLY BE HANDLED WITH CARE
 
 ## Development
 
-start development with
-
-```
- $ sbt run
-```
+To start a development server use `$ sbt run`. The server offers a test site to see incoming events: `http://localhost:9000/test`.
 
 To reformat all Scala files use `sbt scalafmt`. The build will may fail if some files are not formatted correctly.
 
-To run all tests and see all compiler warnings use:
+To run all tests and see all compiler and wart remover warnings use:
 
 ```
  $ sbt clean test
 ```
+
+Notice that the IntegrationTest.scala requires a local installed chrome or chromium browser to run successfully.
 
 After `sbt stage` start the server in production mode with:
 
