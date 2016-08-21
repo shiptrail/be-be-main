@@ -5,36 +5,22 @@ import play.api.test.Helpers._
 import play.api.test._
 
 /**
- * Add your spec here.
- * You can mock out a whole application including requests, plugins etc.
- * For more information, consult the wiki.
- */
+  * Add your spec here.
+  * You can mock out a whole application including requests, plugins etc.
+  * For more information, consult the wiki.
+  */
 class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
   "Routes" should {
 
-    "send 404 on a bad request" in  {
-      route(app, FakeRequest(GET, "/boum")).map(status(_)) mustBe Some(NOT_FOUND)
+    "send 404 on a bad request" in {
+      route(app, FakeRequest(GET, "/boum")).map(status) mustBe Some(NOT_FOUND)
     }
-
-  }
-
-  "HomeController" should {
-
-    "render the index page" in {
-      val home = route(app, FakeRequest(GET, "/")).get
-
-      status(home) mustBe OK
-      contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include ("Your new application is ready.")
-    }
-
   }
 
   "BackendController V2" should {
 
-    val validClientUpdate =
-      """
+    val validClientUpdate = """
         [
           {
             "lat": 0.0,
@@ -55,18 +41,17 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
     "accept valid json" in {
       val validRequest = FakeRequest(
-        Helpers.POST,
-        controllers.routes.BackendController.send2(UUID.randomUUID()).url,
-        FakeHeaders(
-          Seq("Content-type"->"application/json")
-        ),
-        validClientUpdate
+          Helpers.POST,
+          controllers.routes.BackendController.send(UUID.randomUUID()).url,
+          FakeHeaders(
+              Seq("Content-type" -> "application/json")
+          ),
+          validClientUpdate
       )
 
       val Some(result) = route(app, validRequest)
 
-      status(result) mustBe OK
+      status(result) mustBe NO_CONTENT
     }
-
   }
 }
