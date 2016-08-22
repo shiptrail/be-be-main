@@ -5,6 +5,9 @@
 # Shows a tests page for the server output
 GET         /test                   controllers.Assets.at(path="/public", file="test.html")
 
+# Redirects from / to the Frontend
+GET         /                       controllers.LandingPageController.showFrontend
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)
 
