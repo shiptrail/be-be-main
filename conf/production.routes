@@ -1,12 +1,12 @@
 # Routes
-# This file defines all application routes in development environment (Higher priority routes first)
+# This file defines all application routes in production environment (Higher priority routes first)
 # ~~~~
 
 # Shows a tests page for the server output
 GET         /test                   controllers.Assets.at(path="/public", file="test.html")
 
-# Redirects from / to http://localhost:3000/#/
-GET         /                       controllers.LandingPageController.showDevFrontend()
+# Redirects from / to the Frontend
+GET         /                       controllers.LandingPageController.showProdFrontend()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)
