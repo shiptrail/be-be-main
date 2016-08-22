@@ -26,6 +26,9 @@ javaOptions in Universal ++= Seq(
   "-J-Xmx1024m",
   "-J-Xms512m",
 
+  // Use separate configuration file for production environment
+  s"-Dconfig.resource=production.conf",
+
   // Since play uses separate pidfile we have to provide it with a proper path
   // name of the pid file must be play.pid
   // s"-Dpidfile.path=/var/run/${packageName.value}/play.pid",
