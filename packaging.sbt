@@ -34,7 +34,10 @@ javaOptions in Universal ++= Seq(
   s"-Dpidfile.path=/dev/null",
 
   // You may also want to include this setting if you use play evolutions
-  "-DapplyEvolutions.default=true"
+  "-DapplyEvolutions.default=true",
+
+  // Use separate configuration file for production environment
+  s"-Dconfig.file=/opt/${packageName.value}/conf/production.conf"
 )
 
 linuxPackageMappings += {
