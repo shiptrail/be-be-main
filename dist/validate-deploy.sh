@@ -5,18 +5,18 @@ echo "Validating install"
 HOSTNAME=$1
 
 SERVES_PLAY_RESULT=false
-SERVES_PLAY=`curl -k http://$HOSTNAME/ 2>/dev/null | grep "Welcome to Play" -c`
+SERVES_PLAY=`curl -L -k http://$HOSTNAME/ 2>/dev/null | grep "ng-app=gulpAngular" -c`
 if [ "$SERVES_PLAY" -ge "1" ]; then
-    echo "/ Serves Play BE OK"
+    echo "/ Serves Play BE OK and redirects to FE OK"
     SERVES_PLAY_RESULT=true
     true
 else
-    echo "/ Serves Play BE FAIL"
+    echo "/ Serves Play BE and redirects to FE FAIL"
     SERVES_PLAY_RESULT=false
     false
 fi
 
-SERVES_FE=`curl -L -v -k http://$HOSTNAME/fe/ 2>/dev/null | grep "ng-app=gulpAngular" -c`
+SERVES_FE=`curl -L -k http://$HOSTNAME/fe/ 2>/dev/null | grep "ng-app=gulpAngular" -c`
 if [ "$SERVES_FE" -ge "1" ]; then
     echo "/fe/ Serves FE OK"
     SERVES_FE_RESULT=true
