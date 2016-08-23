@@ -29,7 +29,23 @@ fi
 
 cd /tmp
 curl -O -L -v -k http://$HOSTNAME/swpdvtracker.apk 2>/dev/null
-test -f swpdvtracker.apk && echo "Serves Android APK OK"
+
+SERVES_APK_RESULT=false
+if [ -f 'swpdvtracker.apk' ]; then
+	echo "Serves Android APK OK"
+	SERVES_APK_RESULT=true
+	true
+else	
+	echo "Serves Android APK FAIL"
+	SERVES_APK_RESULT=false
+	false
+fi
+
+#test -f swpdvtracker.apk && echo "Serves Android APK OK"
 rm -v swpdvtracker.apk || true
 
-$SERVES_PLAY_RESULT && $SERVES_FE_RESULT && `test -f swpdvtracker.apk`
+echo play result: $SERVES_PLAY_RESULT
+echo fe result: $SERVES_FE_RESULT
+echo apk result: $SERVES_APK_RESULT
+
+$SERVES_PLAY_RESULT && $SERVES_FE_RESULT && $SERVES_APK_RESULT
