@@ -32,7 +32,7 @@ class BackendControllerTest extends FlatSpec with Matchers with MockitoSugar {
         Helpers.POST,
         "",
         FakeHeaders(),
-        List(TrackPoint(1, 1, 1, 1, 1))
+        List(TrackPoint(1, 1, 1, Some(1), Seq.empty, Seq.empty, Seq.empty, Seq.empty))
     )
 
     val result: Future[Result] = controller.send(someUUID)()(singleTrackPoint)
@@ -55,7 +55,7 @@ class BackendControllerTest extends FlatSpec with Matchers with MockitoSugar {
         Helpers.POST,
         "",
         FakeHeaders(),
-        List.fill(numberOfPoints)(TrackPoint(1, 1, 1, 1, 1))
+        List.fill(numberOfPoints)(TrackPoint(1, 1, 1, Some(1), Seq.empty, Seq.empty, Seq.empty, Seq.empty))
     )
 
     val result: Future[Result] = controller.send(someUUID)()(multiplePoints)
