@@ -4,9 +4,8 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import models.TrackPoint
-import org.mockito.Mockito._
 import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FlatSpec, Matchers}
 import play.api.mvc.Result
@@ -22,17 +21,17 @@ class BackendControllerTest extends FlatSpec with Matchers with MockitoSugar {
   implicit val mat = ActorMaterializer()
 
   "Backend Controller" should "pass data from the track service" in {
-    val trackServiceMock = mock[TrackService[TrackPoint]]
+    val trackServiceMock = mock[TrackService[Int]]
 
     val someUUID = UUID.randomUUID()
 
-    val controller = new BackendController(trackServiceMock)
+    val controller = new AbstractBackendController[Int](trackServiceMock)
 
     val singleTrackPoint = FakeRequest(
         Helpers.POST,
         "",
         FakeHeaders(),
-        List(TrackPoint(1, 1, 1, 1, 1))
+        List(1)
     )
 
     val result: Future[Result] = controller.send(someUUID)()(singleTrackPoint)
@@ -48,14 +47,14 @@ class BackendControllerTest extends FlatSpec with Matchers with MockitoSugar {
 
     val someUUID = UUID.randomUUID()
 
-    val trackServiceMock = mock[TrackService[TrackPoint]]
+    val trackServiceMock = mock[TrackService[Int]]
 
-    val controller = new BackendController(trackServiceMock)
+    val controller = new AbstractBackendController[Int](trackServiceMock)
     val multiplePoints = FakeRequest(
         Helpers.POST,
         "",
         FakeHeaders(),
-        List.fill(numberOfPoints)(TrackPoint(1, 1, 1, 1, 1))
+        List.fill(numberOfPoints)(1)
     )
 
     val result: Future[Result] = controller.send(someUUID)()(multiplePoints)
