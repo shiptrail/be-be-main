@@ -24,7 +24,7 @@ class FrontendControllerTest extends FlatSpec with Matchers with MockitoSugar {
     val someUUID = UUID.randomUUID()
 
     when(trackServiceMock.allTracks)
-      .thenReturn(Source(someUUID -> TrackPoint(10, 10, 10, 10, 10) :: Nil))
+      .thenReturn(Source(someUUID -> TrackPoint(10, 10, 10, Some(10), None, None, None, None) :: Nil))
     val controller = new FrontendController(trackServiceMock)
 
     val validRequest = FakeRequest(
