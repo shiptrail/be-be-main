@@ -22,7 +22,7 @@ if [ "$SERVES_FE" -ge "1" ]; then
     SERVES_FE_RESULT=true
     true
 else
-    echo "/fe/ Serves FE FAIL"
+echo "/fe/ Serves FE FAIL"
     SERVES_FE_RESULT=false
     false
 fi
@@ -35,7 +35,7 @@ if [ -f 'swpdvtracker.apk' ]; then
 	echo "Serves Android APK OK"
 	SERVES_APK_RESULT=true
 	true
-else	
+else
 	echo "Serves Android APK FAIL"
 	SERVES_APK_RESULT=false
 	false

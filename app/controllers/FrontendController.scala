@@ -8,13 +8,17 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 import models.TrackPoint
 import play.api.libs.EventSource
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc._
 import services.TrackService
 
 @Singleton
-class FrontendController @Inject()(
-    trackService: TrackService[TrackPoint])(implicit mat: Materializer)
+class FrontendController @Inject()(trackService: TrackService[TrackPoint])(
+    implicit mat: Materializer)
+    extends AbstractFrontendController[TrackPoint](trackService)
+
+class AbstractFrontendController[Point: Writes](
+    trackService: TrackService[Point])(implicit mat: Materializer)
     extends Controller {
 
   def allTracks() = Action { request =>
@@ -24,7 +28,7 @@ class FrontendController @Inject()(
     Ok.chunked(tracks via EventSource.flow).as("text/event-stream")
   }
 
-  def toJsonEvent(device: UUID, trackPoint: TrackPoint) = {
+  def toJsonEvent(device: UUID, trackPoint: Point) = {
     Json.obj(
         "device" -> device,
         "point" -> trackPoint
