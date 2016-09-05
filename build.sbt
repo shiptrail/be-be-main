@@ -21,6 +21,7 @@ scalaVersion := "2.11.8"
 libraryDependencies ++= Seq(
   cache,
   ws,
+  "io.github.karols" %% "units" % "0.2.1",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
   "com.typesafe.akka" %% "akka-stream-testkit" % "2.4.8" % Test,
   "org.mockito" % "mockito-core" % "1.10.19" % Test
