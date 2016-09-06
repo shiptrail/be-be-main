@@ -12,14 +12,8 @@ import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc._
 import services.TrackService
 
-@Singleton
-class FrontendController @Inject()(trackService: TrackService[TrackPoint])(
-    implicit mat: Materializer)
-    extends AbstractFrontendController[TrackPoint](trackService)
-
-class AbstractFrontendController[Point: Writes](
-    trackService: TrackService[Point])(implicit mat: Materializer)
-    extends Controller {
+class FrontendController @Inject()(trackService: TrackService[TrackPoint])(implicit mat: Materializer)
+  extends Controller {
 
   def allTracks() = Action { request =>
     val tracks: Source[JsValue, NotUsed] =
@@ -28,10 +22,51 @@ class AbstractFrontendController[Point: Writes](
     Ok.chunked(tracks via EventSource.flow).as("text/event-stream")
   }
 
-  def toJsonEvent(device: UUID, trackPoint: Point) = {
+  def trackMetaData() = Action { request =>
+    val liveTrackUuids: Seq[UUID] = trackService.allDevices
+
+    if (liveTrackUuids.isEmpty)
+      Ok(toJsonRecord(liveTrackUuids))
+    else
+      Ok(toJsonRecord(liveTrackUuids))
+  }
+
+  def toJsonRecord(devices: Seq[UUID]) = {
+    val devicesAsTrack = devices.map(toJsonTrack)
     Json.obj(
-        "device" -> device,
-        "point" -> trackPoint
+      "records" ->
+        Json.arr(
+          Json.obj(
+            "id" -> "32",
+            "name" -> "Live test",
+            "date" -> "now",
+            "length" -> "1nm",
+            "location" -> "Berlin",
+            "tracks" -> devicesAsTrack
+          )
+        )
     )
+  }
+
+  def toJsonTrack(device: UUID): JsValue = {
+    Json.obj(
+      "id" -> device.toString.filter((c) => c != '-'),
+      "shipName" -> "ship"
+    )
+  }
+
+  def toJsonEvent(device: UUID, trackPoint: TrackPoint) = {
+    Json.arr(
+      Json.obj(
+        "trackId" -> device.toString.filter((c) => c != '-'),
+        "type" -> "coordinates",
+        "coordinates" -> Json.arr(
+          Json.arr(
+            trackPoint.lng,
+            trackPoint.lat,
+            trackPoint.timestamp.value
+          )
+        )
+      ))
   }
 }
