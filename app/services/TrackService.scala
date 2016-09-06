@@ -10,6 +10,7 @@ import com.google.inject.ImplementedBy
 import dao.FutureLinkedList
 import models.TrackPoint
 
+import scala.collection.mutable
 import scala.concurrent.ExecutionContext
 
 @ImplementedBy(classOf[TrackServiceImpl[TrackPoint]])
@@ -17,6 +18,8 @@ trait TrackService[Point] {
   def consume(device: UUID, point: Point): Unit
 
   def allTracks: Source[(UUID, Point), NotUsed]
+
+  def allDevices: Seq[UUID]
 }
 
 @Singleton
@@ -28,7 +31,10 @@ class TrackServiceImpl[Point] @Inject()(
   val linkedList: FutureLinkedList[(UUID, Point)] =
     new FutureLinkedList[(UUID, Point)]
 
+  val knownUuids: mutable.HashSet[UUID] = mutable.HashSet()
+
   override def consume(device: UUID, point: Point) = {
+    knownUuids += (device)
     linkedList.append((device, point))
   }
 
@@ -39,5 +45,9 @@ class TrackServiceImpl[Point] @Inject()(
           Some((next, (device, point)))
       }
     }
+  }
+
+  override def allDevices: Seq[UUID] = {
+    knownUuids.toSeq
   }
 }

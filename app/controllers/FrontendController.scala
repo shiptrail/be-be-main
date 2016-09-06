@@ -17,7 +17,7 @@ class FrontendController @Inject()(trackService: TrackService[TrackPoint])(
     implicit mat: Materializer)
     extends AbstractFrontendController[TrackPoint](trackService)
 
-class AbstractFrontendController[Point: Writes](
+class AbstractFrontendController[Point](
     trackService: TrackService[Point])(implicit mat: Materializer)
     extends Controller {
 
@@ -28,10 +28,52 @@ class AbstractFrontendController[Point: Writes](
     Ok.chunked(tracks via EventSource.flow).as("text/event-stream")
   }
 
-  def toJsonEvent(device: UUID, trackPoint: Point) = {
+  def trackMetaData() = Action { request =>
+    val liveTrackUuids: Seq[UUID] = trackService.allDevices
+    println(Json.stringify(toJsonRecord(liveTrackUuids)))
+    if (liveTrackUuids.isEmpty)
+      Ok(toJsonRecord(liveTrackUuids))
+    else
+      Ok(toJsonRecord(liveTrackUuids))
+  }
+
+  def toJsonRecord(devices: Seq[UUID]) = {
+    val devicesAsTrack = devices.map(toJsonTrack)
     Json.obj(
-        "device" -> device,
-        "point" -> trackPoint
+        "records" ->
+        Json.arr(
+            Json.obj(
+                "id" -> "32",
+                "name" -> "Live test",
+                "date" -> "now",
+                "length" -> "1nm",
+                "location" -> "Berlin",
+                "tracks" -> devicesAsTrack
+            )
+        )
     )
+  }
+
+  def toJsonTrack(device: UUID): JsValue = {
+    Json.obj(
+        "id" -> device.toString.filter((c) => c != '-'),
+        "shipName" -> "ship"
+    )
+  }
+
+  def toJsonEvent(device: UUID, trackPoint: Point) = {
+    val tracks = trackPoint.asInstanceOf[TrackPoint]
+    Json.arr(
+        Json.obj(
+            "trackId" -> device.toString.filter((c) => c != '-'),
+            "type" -> "coordinates",
+            "coordinates" -> Json.arr(
+                Json.arr(
+                    tracks.lng,
+                    tracks.lat,
+                    tracks.timestamp.value
+                )
+            )
+        ))
   }
 }
