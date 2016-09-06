@@ -14,3 +14,5 @@ GET         /assets/*file           controllers.Assets.versioned(path="/public",
 POST        /v2/*device/send        controllers.BackendController.send(device: java.util.UUID)
 
 GET         /tracks/all             controllers.FrontendController.allTracks
+
+GET         /records                controllers.FrontendController.trackMetaData
