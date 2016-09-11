@@ -42,6 +42,11 @@ linuxPackageMappings += {
 }
 
 linuxPackageMappings += {
+  val builtFrontend = baseDirectory.value / "fe-root" / "fe" / "assets" / "env-prod.js"
+  packageMapping((builtFrontend, s"/opt/${packageName.value}/fe-root/fe/assets/env.js"))
+}
+
+linuxPackageMappings += {
   val apacheConfig_http = baseDirectory.value / "dist" / "apache" / "swpdv-80.conf"
   packageMapping((apacheConfig_http, "/etc/apache/sites-available/swpdv-80.conf"))
 }
