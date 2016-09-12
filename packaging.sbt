@@ -42,13 +42,13 @@ linuxPackageMappings += {
 }
 
 linuxPackageMappings += {
-  val apacheConfig_http = baseDirectory.value / "dist" / "apache" / "swpdv-80.conf"
-  packageMapping((apacheConfig_http, "/etc/apache/sites-available/swpdv-80.conf"))
+  val apacheConfig_https = baseDirectory.value / "dist" / "apache" / "swpdv-443.conf"
+  packageMapping((apacheConfig_https, "/etc/apache2/sites-available/swpdv-443.conf"))
 }
 
 linuxPackageMappings += {
-  val apacheConfig_https = baseDirectory.value / "dist" / "apache" / "swpdv-443.conf"
-  packageMapping((apacheConfig_https, "/etc/apache/sites-available/swpdv-443.conf"))
+  val apacheConfig_http = baseDirectory.value / "dist" / "apache" / "swpdv-80.conf"
+  packageMapping((apacheConfig_http, "/etc/apache2/sites-available/swpdv-80.conf"))
 }
 
 val linuxPostInstallScript =
