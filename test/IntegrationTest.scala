@@ -43,8 +43,9 @@ class IntegrationTest
 
       eventually {
         pageSource must include(deviceLatitude.toString)
-        pageSource must include(deviceId)
+        pageSource must include("1589de3ce60e4107ab1bdde474a2b5fd")
       }
+
     }
   }
 }
