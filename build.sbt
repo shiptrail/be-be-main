@@ -24,7 +24,9 @@ libraryDependencies ++= Seq(
   "io.github.karols" %% "units" % "0.2.1",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
   "com.typesafe.akka" %% "akka-stream-testkit" % "2.4.8" % Test,
-  "org.mockito" % "mockito-core" % "1.10.19" % Test
+  "com.scalawilliam" %% "xs4s" % "0.2",
+  "org.mockito" % "mockito-core" % "1.10.19" % Test,
+  "org.json4s" %% "json4s-jackson" % "3.3.0"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
