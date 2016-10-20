@@ -4,6 +4,8 @@ import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 
+import play.Logger;
+
 import com.google.inject.Singleton
 import models.TrackPoint
 import com.typesafe.config.ConfigFactory
@@ -25,6 +27,7 @@ class InitDummyTracks @Inject()(trackService: TrackService[TrackPoint]) {
     val listOfFiles = new File(filePath).listFiles.filter(f =>
           f.getName.endsWith(".gpx") || f.getName.endsWith(".cgps") ||
           f.getName.endsWith(".fps"))
+    Logger.debug(s"List of files: $listOfFiles")
     new LoadInitTracks(trackService).loadDummyTracks(listOfFiles)
   }
 }
@@ -33,6 +36,7 @@ class LoadInitTracks @Inject()(trackService: TrackService[TrackPoint]) {
 
   def loadDummyTracks(listOfFiles: Array[File]): Unit = {
     for (file <- listOfFiles) {
+      Logger.debug(s"Currently parsing: $file")
       val trackPointIterator = MultiFormatParser.parse(file)
       loadDummyTrack(trackPointIterator)
     }
