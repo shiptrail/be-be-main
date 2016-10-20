@@ -27,10 +27,7 @@ class FrontendController @Inject()(
   def trackMetaData() = Action { request =>
     val liveTrackUuids: Seq[UUID] = trackService.allDevices
 
-    if (liveTrackUuids.isEmpty)
-      Ok(toJsonRecord(liveTrackUuids))
-    else
-      Ok(toJsonRecord(liveTrackUuids))
+    Ok(toJsonRecord(liveTrackUuids))
   }
 
   def toJsonRecord(devices: Seq[UUID]) = {
