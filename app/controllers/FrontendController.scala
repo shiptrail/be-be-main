@@ -1,6 +1,7 @@
 package controllers
 
-import java.util.UUID
+import java.text.SimpleDateFormat
+import java.util.{Date, UUID}
 import javax.inject._
 
 import akka.NotUsed
@@ -8,7 +9,7 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 import models.TrackPoint
 import play.api.libs.EventSource
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import services.TrackService
 
@@ -34,26 +35,30 @@ class FrontendController @Inject()(
 
   def toJsonRecord(devices: Seq[UUID]) = {
     val devicesAsTrack = devices.map(toJsonTrack)
-    Json.obj(
-        "records" ->
-        Json.arr(
-            Json.obj(
-                "id" -> "32",
-                "name" -> "Live test",
-                "date" -> "now",
-                "length" -> "1nm",
-                "location" -> "Berlin",
-                "tracks" -> devicesAsTrack
-            )
-        )
-    )
+    var records = Json.arr()
+    val df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+    for ((device_track_tuple, id) <- devicesAsTrack.zipWithIndex) {
+      records = records.+:(
+          Json.obj(
+              "id" -> id,
+              "name" -> "Track",
+              "date" -> df.format(new Date(trackService
+                        .getTimestampOfDevice(device_track_tuple._1)
+                        .value)),
+              "length" -> "0",
+              "location" -> "Berlin",
+              "tracks" -> Json.arr(device_track_tuple._2)
+          ))
+    }
+    Json.obj("records" -> records)
   }
 
-  def toJsonTrack(device: UUID): JsValue = {
-    Json.obj(
-        "id" -> device.toString.filter((c) => c != '-'),
-        "shipName" -> "ship"
-    )
+  def toJsonTrack(device: UUID): (UUID, JsValue) = {
+    (device,
+     Json.obj(
+         "id" -> device.toString.filter((c) => c != '-'),
+         "shipName" -> "ship"
+     ))
   }
 
   def toJsonEvent(device: UUID, trackPoint: TrackPoint) = {
