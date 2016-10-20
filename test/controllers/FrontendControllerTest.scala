@@ -7,7 +7,6 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import io.github.karols.units.SI.Short.ms
 import io.github.karols.units._
-import io.github.karols.units.defining._
 import models.TrackPoint
 import org.scalatest.mock.MockitoSugar
 import play.api.test.Helpers._
@@ -73,7 +72,6 @@ class FrontendControllerTest extends FlatSpec with Matchers with MockitoSugar {
 
     status(result) should be(OK)
     val contentString = contentAsString(result)
-    contentString should startWith("""{"records":[{""")
-    contentString should endWith(s""""tracks":[]}]}""")
+    contentString should startWith("""{"records":[""")
   }
 }

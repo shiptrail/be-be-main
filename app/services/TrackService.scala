@@ -8,6 +8,8 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 import com.google.inject.ImplementedBy
 import dao.FutureLinkedList
+import io.github.karols.units.SI.Short.ms
+import io.github.karols.units._
 import models.TrackPoint
 
 import scala.collection.mutable
@@ -20,6 +22,8 @@ trait TrackService[Point] {
   def allTracks: Source[(UUID, Point), NotUsed]
 
   def allDevices: Seq[UUID]
+
+  def getTimestampOfDevice(device: UUID): IntU[ms]
 }
 
 @Singleton
@@ -31,10 +35,15 @@ class TrackServiceImpl[Point] @Inject()(
   val linkedList: FutureLinkedList[(UUID, Point)] =
     new FutureLinkedList[(UUID, Point)]
 
+  val dates: mutable.Map[UUID, IntU[ms]] = mutable.Map()
+
   val knownUuids: mutable.HashSet[UUID] = mutable.HashSet()
 
   override def consume(device: UUID, point: Point) = {
     knownUuids += (device)
+    if (point.isInstanceOf[TrackPoint]) {
+      dates += (device -> point.asInstanceOf[TrackPoint].timestamp)
+    }
     linkedList.append((device, point))
   }
 
@@ -49,5 +58,14 @@ class TrackServiceImpl[Point] @Inject()(
 
   override def allDevices: Seq[UUID] = {
     knownUuids.toSeq
+  }
+
+  override def getTimestampOfDevice(device: UUID): IntU[ms] = {
+    if (dates.contains(device)) {
+      dates(device)
+    } else {
+      //Default value
+      0.of[ms]
+    }
   }
 }
