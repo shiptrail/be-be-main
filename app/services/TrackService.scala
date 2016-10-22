@@ -24,6 +24,10 @@ trait TrackService[Point] {
   def allDevices: Seq[UUID]
 
   def getTimestampOfDevice(device: UUID): IntU[ms]
+
+  def allDummyDevices: Seq[UUID]
+
+  def consumeDummyTrack(device: UUID, point: Point): Unit
 }
 
 @Singleton
@@ -38,6 +42,8 @@ class TrackServiceImpl[Point] @Inject()(
   val dates: mutable.Map[UUID, IntU[ms]] = mutable.Map()
 
   val knownUuids: mutable.HashSet[UUID] = mutable.HashSet()
+
+  val knownDummyUuids: mutable.HashSet[UUID] = mutable.HashSet()
 
   override def consume(device: UUID, point: Point) = {
     knownUuids += (device)
@@ -67,5 +73,14 @@ class TrackServiceImpl[Point] @Inject()(
       //Default value
       0.of[ms]
     }
+  }
+
+  override def allDummyDevices: Seq[UUID] = {
+    knownDummyUuids.toSeq.isEmpty
+    knownDummyUuids.toSeq
+  }
+
+  override def consumeDummyTrack(device: UUID, point: Point): Unit = {
+    knownDummyUuids += (device)
   }
 }
