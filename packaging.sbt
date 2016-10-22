@@ -53,6 +53,11 @@ linuxPackageMappings += {
 
 val linuxPostInstallScript =
   s"""
+     |echo "Create data folders"
+     |mkdir -p -v /var/backend-server/data || true
+     |mkdir -p -v /var/backend-server/dummytracks || true
+     |chown -R backend-server:backend-server /var/backend-server
+     |
      |echo "Configure Apache"
      |a2enmod rewrite ssl proxy proxy_http
      |a2dissite 000-default default-ssl
