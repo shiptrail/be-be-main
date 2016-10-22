@@ -48,6 +48,8 @@ class FrontendControllerTest extends FlatSpec with Matchers with MockitoSugar {
       .thenReturn(Source(someUUID -> TrackPoint(10, 10, 10.of[ms]) :: Nil))
     when(trackServiceMock.allDevices)
       .thenReturn(Seq(someUUID))
+    when(trackServiceMock.allDummyDevices)
+      .thenReturn(Seq(someUUID))
 
     val controller = new FrontendController(trackServiceMock)
     val result = controller.trackMetaData()(FakeRequest())
@@ -66,6 +68,8 @@ class FrontendControllerTest extends FlatSpec with Matchers with MockitoSugar {
       .thenReturn(Source(Nil))
     when(trackServiceMock.allDevices)
       .thenReturn(Seq())
+    when(trackServiceMock.allDummyDevices)
+      .thenReturn(Seq(someUUID))
 
     val controller = new FrontendController(trackServiceMock)
     val result = controller.trackMetaData()(FakeRequest())
