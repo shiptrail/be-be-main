@@ -5,7 +5,6 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import dao.FutureLinkedList
 import models.TrackPoint
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -26,17 +25,17 @@ class InitDummyTracksTest extends FlatSpec
 
   val someId = UUID.randomUUID()
 
-  "Init track" should "load all 3 Points from file into linked List" in {
-    val linkedListMock = mock[FutureLinkedList[(UUID, TrackPoint)]]
+  "Init track" should "load all 3 device id's into knownDummyUuids" in {
+    val hashSetMock = mock[scala.collection.mutable.HashSet[UUID]]
     val trackService = new TrackServiceImpl[TrackPoint] {
-      override val linkedList = linkedListMock
+      override val knownDummyUuids = hashSetMock
     }
 
     val classUnderTest = new LoadInitTracks(trackService)
 
     val trackPointIterator = MultiFormatParser.parse(new File("./test/services/dummytracks/minimal.gpx"))
-    classUnderTest.loadDummyTrack(trackPointIterator)
-    verify(trackService.linkedList, times(3)).append(any())
+    classUnderTest.loadDummyTrack(trackPointIterator, someId)
+    verify(trackService.knownDummyUuids, times(3)).+=(any())
   }
 
 }
