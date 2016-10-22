@@ -26,7 +26,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream-testkit" % "2.4.8" % Test,
   "com.scalawilliam" %% "xs4s" % "0.2",
   "org.mockito" % "mockito-core" % "1.10.19" % Test,
-  "org.json4s" %% "json4s-jackson" % "3.3.0"
+  "org.json4s" %% "json4s-jackson" % "3.3.0",
+  "com.lambdaworks" %% "jacks" % "2.3.3"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
