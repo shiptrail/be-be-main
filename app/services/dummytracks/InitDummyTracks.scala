@@ -59,7 +59,7 @@ class SaveDummyTracksIntoFile {
       trackPointIterator: Iterator[TrackPoint], device: UUID): Unit = {
     val filePath =
       ConfigFactory.load().getString("file.path.of.destination.for.dummyfiles")
-    val id = device.toString()
+    val id = device.toString() replaceAll ("[-]", "")
     val file = filePath + id + ".json"
     Logger.debug(s"Currently writing: $file")
     val coordinates: mutable.ListBuffer[(Double, Double, Long)] =
