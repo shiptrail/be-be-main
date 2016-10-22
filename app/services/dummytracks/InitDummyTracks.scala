@@ -66,7 +66,7 @@ class SaveDummyTracksIntoFile {
       mutable.ListBuffer()
     for (trackPoint <- trackPointIterator) {
       val coordinatesEntry =
-        (trackPoint.lat, trackPoint.lng, trackPoint.timestamp.value)
+        (trackPoint.lng, trackPoint.lat, trackPoint.timestamp.value)
       coordinates += coordinatesEntry
     }
     val json = JacksMapper
@@ -74,8 +74,7 @@ class SaveDummyTracksIntoFile {
         coordinates)
 
     val out = new PrintWriter(new FileWriter(file));
-    out.write("{ \"tracks\" : [{ \"id\": \"" + id + "\",\"coordinates\": " +
-        json + ", \"events\": []}]}")
+    out.write(s"""{ \"$id\" : { \"coordinates\": $json , \"events\": []}}""")
     out.close()
   }
 }
