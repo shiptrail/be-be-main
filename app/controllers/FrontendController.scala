@@ -46,10 +46,23 @@ class FrontendController @Inject()(
             "tracks" -> devicesAsTrack
         )
     )
+    records = records.+:(
+        Json.obj(
+            "id" -> "1",
+            "name" -> "Berta",
+            "date" -> "2016-08-10T00:12:49.424Z",
+            "length" -> "5nm",
+            "location" -> "Berlin",
+            "tracks" -> Json.arr(
+                Json.obj("id" -> "174922453", "shipName" -> "Alpha"),
+                Json.obj("id" -> "175335558", "shipName" -> "Berta")
+            )
+        )
+    )
     for ((device_track_tuple, id) <- offlineDevicesAsTrack.zipWithIndex) {
       records = records.+:(
           Json.obj(
-              "id" -> (id + 1),
+              "id" -> (id + 2),
               "name" -> "Track",
               "date" -> df.format(new Date(trackService
                         .getTimestampOfDevice(device_track_tuple._1)
